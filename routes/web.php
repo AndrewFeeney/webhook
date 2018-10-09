@@ -11,6 +11,12 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::any('webhook/{uri}', function ($uri) {
+    $webhook = App\Models\Webhook::whereUri($uri)->first();
+
+    if (is_null($webhook)) {
+        abort(404);
+    }
+
+    $webhook->captureRequest(request());
 });
